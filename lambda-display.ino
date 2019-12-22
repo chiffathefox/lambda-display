@@ -16,7 +16,8 @@ static float toValue(unsigned int conv, FormatType formatType);
 
 static const int AdcPin = A5;
 static const int AdcResolution = 1024;
-static const unsigned int DisplayUpdatePeriod = 200;
+static const unsigned long DisplayUpdatePeriod = 200;
+static const unsigned long SoundUpdatePeriod = 200;
 static const float LambdaOffset = 0.5;
 static const float AFREnd = 22.1;
 static const float AFRStart = 7.4;
@@ -46,7 +47,8 @@ loop()
 {
     static FormatType formatType = FormatLambda;
     static bool sound = false;
-    static unsigned long last_update = 0;
+    static unsigned long last_display_update = 0;
+    static unsigned long last_sound_update = 0;
 
     /* Assuming that ADC voltage is 5V. */
 
@@ -56,8 +58,8 @@ loop()
 
     /* LED indicator output. */
 
-    if (millis() - last_update >= DisplayUpdatePeriod) {
-        last_update = millis();
+    if (millis() - last_display_update >= DisplayUpdatePeriod) {
+        last_display_update = millis();
         MFS.write(value, 2);
     }
 
@@ -73,7 +75,8 @@ loop()
      * AFR is in range [0.5; 1.5].
      */
 
-    if (sound) {
+    if (sound && millis() - last_sound_update >= SoundUpdatePeriod) {
+        last_sound_update = millis();
         auto mid = AdcResolution / 2;
         unsigned int period = abs(mid - conv) * (20 - 1) / mid + 1;
 
