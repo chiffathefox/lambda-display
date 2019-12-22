@@ -14,8 +14,13 @@ enum FormatType : int {
 static float toValue(unsigned int conv, FormatType formatType);
 
 
-const int AdcPin = A5;
-const int AdcResolution = 1024;
+static const int AdcPin = A5;
+static const int AdcResolution = 1024;
+static const unsigned int DisplayUpdatePeriod = 200;
+static const float LambdaOffset = 0.5;
+static const float AFREnd = 22.1;
+static const float AFRStart = 7.4;
+
 
 
 void
@@ -41,6 +46,7 @@ loop()
 {
     static FormatType formatType = FormatLambda;
     static bool sound = false;
+    static unsigned long last_update = 0;
 
     /* Assuming that ADC voltage is 5V. */
 
@@ -50,7 +56,10 @@ loop()
 
     /* LED indicator output. */
 
-    MFS.write(value, 2);
+    if (millis() - last_update >= DisplayUpdatePeriod) {
+        last_update = millis();
+        MFS.write(value, 2);
+    }
 
     /* Serial output. */
 
@@ -93,6 +102,10 @@ loop()
 
         sound = !sound;
 
+        if (!sound) {
+            MFS.beep(0);
+        }
+
         break;
 
 
@@ -112,11 +125,11 @@ toValue(unsigned int conv, FormatType formatType)
 
     case FormatLambda:
 
-        return 0.5 + (float) conv / AdcResolution;
+        return LambdaOffset + (float) conv / AdcResolution;
 
     case FormatAFR:
         
-        return conv * (22.1 - 7.4) / AdcResolution + 7.4;
+        return conv * (AFREnd - AFRStart) / AdcResolution + AFRStart;
 
     case FormatLast:
 
