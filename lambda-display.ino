@@ -11,6 +11,9 @@ enum FormatType : int {
 };
 
 
+static float toValue(unsigned int conv, FormatType formatType);
+
+
 const int AdcPin = A5;
 const int AdcResolution = 1024;
 
@@ -21,7 +24,15 @@ setup()
     Serial.begin(115200);
     Timer1.initialize();
     MFS.initialize(&Timer1);
+
+    /* Init test of the MFS. */
+
     MFS.beep(5);
+    MFS.write("8.8.8.8.");
+    MFS.writeLeds(LED_1 | LED_2 | LED_3 | LED_4, 1);
+    delay(300);
+    MFS.write("");
+    MFS.writeLeds(LED_1 | LED_2 | LED_3 | LED_4, 0);
 }
 
 
