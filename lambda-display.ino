@@ -16,12 +16,12 @@ static float toValue(unsigned int conv, FormatType formatType);
 
 static const int AdcPin = A5;
 static const int AdcResolution = 1024;
+static const int AdcVoltage = 5000; /* mV */
 static const unsigned long DisplayUpdatePeriod = 200;
 static const unsigned long SoundUpdatePeriod = 200;
 static const float LambdaOffset = 0.5;
 static const float AFREnd = 22.1;
 static const float AFRStart = 7.4;
-
 
 
 void
@@ -65,9 +65,16 @@ loop()
 
     /* Serial output. */
 
+    Serial.print("ms=");
     Serial.print(timestamp);
-    Serial.print(' ');
-    Serial.println(value);
+    Serial.print(" adc=");
+    Serial.print(conv);
+    Serial.print(" mV=");
+    Serial.print((int32_t) conv * AdcVoltage / AdcResolution);
+    Serial.print(" lambda=");
+    Serial.print(toValue(conv, FormatLambda));
+    Serial.print(" afr=");
+    Serial.println(toValue(conv, FormatAFR));
 
     /* 
      * Sound indication of how far is AFR value away from 1.0.
