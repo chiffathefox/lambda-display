@@ -16,9 +16,9 @@ static float toValue(unsigned int conv, FormatType formatType);
 
 static const int AdcPin = A5;
 static const int AdcResolution = 1024;
-static const int AdcVoltage = 5000; /* mV */
-static const unsigned long DisplayUpdatePeriod = 200;
-static const unsigned long SoundUpdatePeriod = 200;
+static const int AdcVoltage = 5000;                     /* mV */
+static const unsigned long DisplayUpdatePeriod = 200;   /* ms */
+static const unsigned long SoundUpdatePeriod = 200;     /* ms */
 static const float LambdaOffset = 0.5;
 static const float AFREnd = 22.1;
 static const float AFRStart = 7.4;
